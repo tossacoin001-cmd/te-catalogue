@@ -3,7 +3,7 @@
 A live, shareable demo of a one-link product catalogue built by **Toss Enterprise**.
 Customers browse every product on one page and orders land in WhatsApp — no app, no checkout, no account.
 
-**Live:** https://te-catalogue.pages.dev
+**Live:** https://te-catalogue.tossacoin001.workers.dev
 
 ## How the request flow works
 
@@ -26,7 +26,10 @@ Nothing is stored or sent to a server — the message is composed in the browser
 | File | Purpose |
 | --- | --- |
 | `index.html` | The whole site (HTML, CSS, JS, demo data) |
-| `_headers` | Cloudflare Pages security + caching headers |
+| `404.html` | Friendly not-found page |
+| `wrangler.jsonc` | Cloudflare deploy config (static assets, `te-catalogue`) |
+| `.assetsignore` | Keeps repo files out of the deployed site |
+| `_headers` | Security headers (used if the site is hosted on Pages) |
 | `README.md` | This file |
 
 ## Editing
@@ -42,8 +45,11 @@ To point requests at a different number, change `CONFIG.whatsapp` to the interna
 ## Deploy
 
 ```bash
-npx wrangler pages deploy . --project-name te-catalogue --branch main
+npx wrangler deploy
 ```
 
-Or connect the GitHub repo (`tossacoin001-cmd/te-catalogue`) to Cloudflare Pages with build command
-`none` and output directory `/`.
+Deploys the current folder to the Cloudflare Worker `te-catalogue` →
+https://te-catalogue.tossacoin001.workers.dev
+
+To use your own domain, add a custom domain to `te-catalogue` in the Cloudflare dashboard
+(Workers & Pages → te-catalogue → Settings → Domains & Routes).
