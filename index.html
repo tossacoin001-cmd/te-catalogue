@@ -179,6 +179,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:16px}
 .field textarea{min-height:96px;resize:vertical;line-height:1.55}
 .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}
 .field input:invalid:not(:placeholder-shown){border-color:var(--sale)}
+.field input.invalid,.field textarea.invalid{border-color:var(--sale);box-shadow:0 0 0 3px color-mix(in srgb,var(--sale) 16%,transparent)}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .optional{font-size:12.5px;color:var(--mute);margin:-8px 0 16px}
 .preview{margin:4px 0 18px;border:1px dashed var(--line);border-radius:12px;background:var(--bg)}
@@ -455,6 +456,7 @@ function buildMessage(f){
   if (f.name)  lines.push("", "MY NAME", f.name);
   if (f.phone) lines.push("", "MY WHATSAPP", f.phone);
   if (f.context) lines.push("", "Demo product I was looking at: " + f.context);
+  
   lines.push("", "— sent from the Toss Enterprise catalogue demo");
   return lines.join("\n");
 }
@@ -660,7 +662,7 @@ function openRequest(context){
     </div>`;
 
   const form = $("#reqForm");
-  const ctxLine = ctx ? `Demo product I was looking at: ${ctx}` : "";
+  const ctxLine = ctx;
 
   const readForm = () => ({
     want: $("#f-want").value,
@@ -673,7 +675,10 @@ function openRequest(context){
   });
 
   const refresh = () => { $("#msgPreview").textContent = buildMessage(readForm()); };
-  form.addEventListener("input", refresh);
+  form.addEventListener("input", e => {
+    if (e.target.classList) e.target.classList.remove("invalid");
+    refresh();
+  });
   form.addEventListener("change", refresh);
   refresh();
 
@@ -686,7 +691,7 @@ function openRequest(context){
     if (!f.products) missing.push($("#f-products"));
     if (missing.length) {
       missing[0].focus();
-      missing.forEach(el => { el.style.borderColor = "var(--sale)"; });
+      missing.forEach(el => { el.classList.add("invalid"); });
       return;
     }
     const text = buildMessage(f);
