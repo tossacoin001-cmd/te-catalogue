@@ -17,7 +17,7 @@
 <style>
 :root{
   --bg:#F4F4EF;--card:#FFFFFF;--ink:#14211C;--mute:#5E6B65;--line:#DDE1DA;
-  --accent:#1E5B4B;--on-accent:#fff;--sale:#B93815;--wa:#1FA855;--tint:#E7EDE7;
+  --accent:#1E5B4B;--on-accent:#fff;--sale:#B93815;--wa:#0E7C3F;--tint:#E7EDE7;
   --serif:"Fraunces",Georgia,"Times New Roman",serif;
   --sans:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
   --r:18px;--shadow:0 1px 2px rgba(20,33,28,.05),0 12px 32px -18px rgba(20,33,28,.28);
@@ -78,8 +78,8 @@ header.top .btn{margin-left:auto}
 /* ---------- value strip ---------- */
 .strip{border-block:1px solid var(--line);background:var(--card)}
 .strip .row{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;padding:26px 0}
-.strip h3{margin:0 0 4px;font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
-.strip h3 svg{color:var(--accent)}
+.strip h2{margin:0 0 4px;font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
+.strip h2 svg{color:var(--accent)}
 .strip p{margin:0;color:var(--mute);font-size:14px}
 
 /* ---------- catalogue ---------- */
@@ -266,15 +266,15 @@ footer .links{display:flex;flex-wrap:wrap;gap:16px}
 <section class="strip">
   <div class="wrap row">
     <div>
-      <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M10 13a5 5 0 007 0l3-3a5 5 0 00-7-7l-1 1"/><path d="M14 11a5 5 0 00-7 0l-3 3a5 5 0 007 7l1-1"/></svg>One link, everywhere</h3>
+      <h2><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M10 13a5 5 0 007 0l3-3a5 5 0 00-7-7l-1 1"/><path d="M14 11a5 5 0 00-7 0l-3 3a5 5 0 007 7l1-1"/></svg>One link, everywhere</h2>
       <p>Drop it in your bio, flyers, status and DMs.</p>
     </div>
     <div>
-      <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 00-8.6 15.1L2 22l5-1.3A10 10 0 1012 2z"/></svg>Orders in your WhatsApp</h3>
+      <h2><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 00-8.6 15.1L2 22l5-1.3A10 10 0 1012 2z"/></svg>Orders in your WhatsApp</h2>
       <p>Every tap sends a ready-made message with product, price and ref.</p>
     </div>
     <div>
-      <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg>Edit it yourself</h3>
+      <h2><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg>Edit it yourself</h2>
       <p>Prices, stock and new drops — updated in minutes.</p>
     </div>
   </div>
@@ -509,7 +509,7 @@ function render(){
   $("#count").textContent = list.length + (list.length === 1 ? " product" : " products");
   $("#grid").innerHTML = list.length ? list.map(([p,i]) => {
     const [s,k] = stockTxt[p.stock];
-    return `<article class="card" data-i="${i}" tabindex="0" role="button" aria-label="View ${esc(p.name)}">
+    return `<article class="card" data-i="${i}" tabindex="0" role="button">
       <div class="ph">
         <img loading="lazy" alt="${esc(p.name)}" src="${art(p)}">
         ${p.was ? '<span class="tag">Sale</span>' : ""}
