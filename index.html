@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>The Market Edit — One-Link Catalogue by Toss Enterprise</title>
-<meta name="description" content="A live demo of a one-link catalogue: browse every product in one place and send your order straight to WhatsApp. Want one for your brand? Tell us what you sell.">
+<meta name="description" content="A live one-link catalogue for brands that sell physical products, digital products or services. Browse the demo, then tell us what you sell and we'll build one for your brand.">
 <meta name="theme-color" content="#1E5B4B">
 <meta property="og:type" content="website">
 <meta property="og:title" content="The Market Edit — One-Link Catalogue">
@@ -94,6 +94,11 @@ header.top .btn{margin-left:auto}
 .chip{white-space:nowrap;border:1px solid var(--line);background:transparent;border-radius:999px;padding:8px 16px;font-size:14px;font-weight:600;color:var(--ink);transition:background .15s,color .15s,border-color .15s}
 .chip:hover{border-color:var(--accent);color:var(--accent)}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chips.types{padding-top:12px}
+.chips.cats{padding-top:8px}
+.chips.cats .chip{padding:6px 13px;font-size:13px;color:var(--mute)}
+.chips.cats .chip:hover{color:var(--accent)}
+.chips.cats .chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
 .count{color:var(--mute);font-size:13.5px;margin:20px 0 14px;display:flex;align-items:center;gap:8px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(228px,1fr));gap:20px;padding-bottom:64px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;text-align:left;padding:0;box-shadow:var(--shadow);transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;position:relative}
@@ -113,6 +118,25 @@ header.top .btn{margin-left:auto}
 .dot.low{background:#D99A1B}.dot.out{background:#B4443A}
 .card .view{margin-top:12px;font-size:13px;font-weight:700;color:var(--accent);display:flex;align-items:center;gap:6px}
 .empty{padding:56px 0;text-align:center;color:var(--mute);grid-column:1/-1}
+
+/* ---------- seller types ---------- */
+.sellers{background:var(--card);border-block:1px solid var(--line);padding:52px 0}
+.sellers h2{font-family:var(--serif);font-weight:500;font-size:clamp(24px,3.4vw,32px);letter-spacing:-.02em;margin:0 0 6px}
+.sellers .sub{color:var(--mute);margin:0 0 28px;max-width:60ch}
+.seller-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.seller{border:1px solid var(--line);border-radius:var(--r);padding:22px;background:var(--bg)}
+.seller .ico{width:40px;height:40px;border-radius:12px;background:var(--tint);color:var(--accent);display:grid;place-items:center;margin-bottom:14px}
+.seller h3{margin:0 0 6px;font-size:16px}
+.seller p{margin:0 0 10px;color:var(--mute);font-size:14px}
+.seller ul{margin:0;padding-left:18px;color:var(--mute);font-size:13.5px}
+.seller li{margin-bottom:3px}
+.seller li::marker{color:var(--accent)}
+
+/* ---------- delivery note in product sheet ---------- */
+.delivery{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:0 0 16px;background:var(--tint)}
+.delivery svg{flex:0 0 auto;color:var(--accent);margin-top:2px}
+.delivery b{display:block;font-size:13.5px;margin-bottom:2px}
+.delivery p{margin:0;font-size:13.5px;color:var(--mute);line-height:1.55}
 
 /* ---------- how it works ---------- */
 .how{background:var(--card);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:52px 0}
@@ -159,7 +183,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:16px}
 .sheet h2{font-family:var(--serif);font-weight:500;font-size:26px;letter-spacing:-.02em;margin:0 0 6px;line-height:1.15}
 .x{position:absolute;right:14px;top:14px;width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,255,255,.92);color:#14211C;font-size:19px;display:grid;place-items:center;z-index:2;box-shadow:0 2px 10px rgba(0,0,0,.18)}
 .x:hover{background:#fff}
-.note{background:var(--tint);border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:13.5px;color:var(--ink);line-height:1.6;margin:16px 0 18px}
+.note{background:transparent;border:1px dashed var(--line);border-radius:14px;padding:14px 16px;font-size:13.5px;color:var(--ink);line-height:1.6;margin:16px 0 18px}
 .note b{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
 .prod-meta{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin:8px 0 14px}
 .prod-meta .price{font-size:21px;margin:0}
@@ -199,11 +223,15 @@ footer .links{display:flex;flex-wrap:wrap;gap:16px}
 
 /* ---------- responsive ---------- */
 @media (max-width:860px){
-  .hero{grid-template-columns:1fr;gap:28px;padding:18px 0 34px}
-  .collage{order:-1;grid-template-columns:1.2fr 1fr}
+  .tools{position:static;backdrop-filter:none;background:transparent}
+  .hero{grid-template-columns:1fr;gap:24px;padding:18px 0 34px}
+  .collage{grid-template-columns:repeat(3,1fr);order:0;gap:10px}
+  .collage img{aspect-ratio:1;border-radius:14px;height:auto}
+  .collage img:nth-child(1){grid-row:auto}
   .final .box{grid-template-columns:1fr;padding:32px 26px}
   .strip .row{grid-template-columns:1fr;gap:16px;padding:22px 0}
   .steps{grid-template-columns:1fr}
+  .seller-grid{grid-template-columns:1fr}
   header.top .btn{display:none}
   .sticky{display:flex}
   footer{padding-bottom:96px}
@@ -246,7 +274,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:16px}
     <div>
       <p class="eyebrow"><i></i>One link · every product</p>
       <h1>Your whole catalogue, <em>in one link.</em></h1>
-      <p>This is a live demo of a one-link catalogue built for a Lagos brand. Browse the edit below — every product opens straight into WhatsApp. Then tap <b>“Want this for yourself?”</b> and we'll build one for your brand.</p>
+      <p>This is a live demo of a one-link catalogue built for a Lagos brand. It carries <b>physical products</b>, <b>digital downloads</b> and <b>services</b> on one page — and every item opens straight into WhatsApp. Tap <b>“Want this for yourself?”</b> and we'll build one for your brand.</p>
       <div class="cta">
         <button class="btn primary" data-request>
           <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 004.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm5.8 14.06c-.24.68-1.42 1.3-1.96 1.35-.54.05-1.03.24-3.47-.73-2.94-1.17-4.8-4.2-4.94-4.4-.15-.2-1.18-1.58-1.18-3.01 0-1.43.75-2.13 1.02-2.42.27-.29.58-.36.78-.36.2 0 .39.002.56.01.18.008.42-.068.66.5.24.58.83 2.01.9 2.16.07.15.12.32.02.52-.1.2-.15.32-.29.49-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.29.76 1.25 1.63 2.03 1.12 1 2.06 1.31 2.35 1.46.29.15.46.12.63-.07.17-.2.73-.85.93-1.14.2-.29.39-.24.66-.15.27.1 1.7.8 1.99.95.29.15.48.22.55.34.07.12.07.7-.17 1.38z"/></svg>
@@ -280,18 +308,46 @@ footer .links{display:flex;flex-wrap:wrap;gap:16px}
   </div>
 </section>
 
+<section class="sellers">
+  <div class="wrap">
+    <h2>Physical products, digital downloads or services</h2>
+    <p class="sub">One link works for all three. The difference is what happens after the customer taps — the demo below shows each one.</p>
+    <div class="seller-grid">
+      <div class="seller">
+        <div class="ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8v8a2 2 0 01-1 1.73l-7 4a2 2 0 01-2 0l-7-4A2 2 0 013 16V8a2 2 0 011-1.73l7-4a2 2 0 012 0l7 4A2 2 0 0121 8z"/><path d="M3.3 7L12 12l8.7-5"/><path d="M12 22V12"/></svg></div>
+        <h3>Physical products</h3>
+        <p>Sizes, colours, stock and delivery — all visible before they message you.</p>
+        <ul><li>Stock and “only a few left” badges</li><li>Delivery fee confirmed on WhatsApp</li><li>Saved sizes and variants</li></ul>
+      </div>
+      <div class="seller">
+        <div class="ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg></div>
+        <h3>Digital products</h3>
+        <p>Ebooks, templates, presets and courses delivered the moment payment lands.</p>
+        <ul><li>“Instant download” badge</li><li>File or link sent in the chat</li><li>No shipping, no address needed</li></ul>
+      </div>
+      <div class="seller">
+        <div class="ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/><path d="M9 16h2"/></svg></div>
+        <h3>Services</h3>
+        <p>Sessions, repairs, consultations and packages booked by appointment.</p>
+        <ul><li>Duration and what's included</li><li>Dates and slots agreed in chat</li><li>Deposit confirms the booking</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
 <div class="wrap">
   <div class="section-head">
     <div>
       <h2>The edit</h2>
-      <p>14 sample products across fashion, beauty, accessories and lifestyle. Tap any item to see how a customer would shop it.</p>
+      <p>22 sample listings across physical products, digital downloads and services. Tap any item to see how a customer would buy it.</p>
     </div>
   </div>
 </div>
 
 <div class="tools"><div class="wrap">
-  <input class="search" id="q" type="search" placeholder="Search products" aria-label="Search products" autocomplete="off">
-  <div class="chips" id="chips" role="group" aria-label="Filter by category"></div>
+  <input class="search" id="q" type="search" placeholder="Search products, downloads and services" aria-label="Search the catalogue" autocomplete="off">
+  <div class="chips types" id="typechips" role="group" aria-label="Filter by what you sell"></div>
+  <div class="chips cats" id="chips" role="group" aria-label="Filter by category"></div>
 </div></div>
 
 <main class="wrap" id="shop">
@@ -386,27 +442,42 @@ const CONFIG = {
   currency: "₦",
   location: "Lekki Phase 1, Lagos",
   banner: '<b>Live demo</b> — this is what your customers would see. <a href="#" data-request>Want one for your brand? →</a>',
-  categories: ["Fashion", "Beauty & skincare", "Accessories", "Lifestyle"]
+  categories: ["Fashion", "Beauty & skincare", "Accessories", "Lifestyle", "Digital downloads", "Services"],
+  sellerTypes: [
+    { id: "physical", label: "Physical products", short: "Physical" },
+    { id: "digital", label: "Digital products", short: "Digital" },
+    { id: "service", label: "Services", short: "Services" }
+  ]
 };
 
 /* =====================================================================
    PRODUCTS — demo data. `img` can be a URL; otherwise a tile is drawn.
    ===================================================================== */
 const PRODUCTS = [
-  {sku:"ME-F01",name:"Classic Leather Bag",cat:"Fashion",price:35000,was:42000,stock:"in",tone:"#8A5A3B",desc:"Structured everyday tote in soft faux leather with a zip pocket and detachable strap."},
-  {sku:"ME-F02",name:"Linen Wide-Leg Trousers",cat:"Fashion",price:18500,stock:"in",tone:"#C9B99A",desc:"Breathable linen blend with an elastic back waist. Sizes S to XL."},
-  {sku:"ME-F03",name:"Ankara Wrap Dress",cat:"Fashion",price:27000,stock:"low",tone:"#C0642B",desc:"Midi wrap dress in bold printed Ankara with a flattering tie waist."},
-  {sku:"ME-F04",name:"Everyday Cotton Tee",cat:"Fashion",price:8500,stock:"in",tone:"#E8E6DF",desc:"Heavyweight cotton, relaxed fit. Available in white, sand and charcoal."},
-  {sku:"ME-B01",name:"Vitamin C Glow Serum",cat:"Beauty & skincare",price:14500,was:16500,stock:"in",tone:"#E9A23B",desc:"Brightening 30ml serum for an even, healthy-looking complexion."},
-  {sku:"ME-B02",name:"Shea Body Butter",cat:"Beauty & skincare",price:7800,stock:"in",tone:"#E7D9B6",desc:"Rich, whipped shea butter for all-day moisture. 250g jar."},
-  {sku:"ME-B03",name:"Gentle Foaming Cleanser",cat:"Beauty & skincare",price:9200,stock:"out",tone:"#9CC7BE",desc:"Fragrance-free daily cleanser suitable for sensitive skin."},
-  {sku:"ME-B04",name:"SPF 50 Daily Sunscreen",cat:"Beauty & skincare",price:11000,stock:"low",tone:"#F2C98A",desc:"Lightweight, no white cast. Works well under makeup."},
-  {sku:"ME-A01",name:"Gold Hoop Earrings",cat:"Accessories",price:6500,stock:"in",tone:"#D1A93C",desc:"Tarnish-resistant 18k gold-plated hoops, light enough for all-day wear."},
-  {sku:"ME-A02",name:"Woven Straw Hat",cat:"Accessories",price:9800,was:12000,stock:"in",tone:"#D8BC84",desc:"Wide-brim hat with an adjustable inner band."},
-  {sku:"ME-A03",name:"Polarised Sunglasses",cat:"Accessories",price:13500,stock:"in",tone:"#2E3A36",desc:"UV400 lenses with a lightweight acetate frame and carry case."},
-  {sku:"ME-L01",name:"Soy Candle, Amber Wood",cat:"Lifestyle",price:10500,stock:"in",tone:"#B8774A",desc:"Hand-poured soy wax, around 45 hours of burn time."},
-  {sku:"ME-L02",name:"Ceramic Mug Set (2)",cat:"Lifestyle",price:12500,stock:"low",tone:"#7FA39A",desc:"Two 350ml stoneware mugs, dishwasher and microwave safe."},
-  {sku:"ME-L03",name:"Insulated Steel Bottle",cat:"Lifestyle",price:15000,stock:"in",tone:"#5E7F9A",desc:"750ml, keeps drinks cold for 24 hours or hot for 12."}
+  {sku:"ME-F01",name:"Classic Leather Bag",cat:"Fashion",type:"physical",price:35000,was:42000,stock:"in",tone:"#8A5A3B",desc:"Structured everyday tote in soft faux leather with a zip pocket and detachable strap."},
+  {sku:"ME-F02",name:"Linen Wide-Leg Trousers",cat:"Fashion",type:"physical",price:18500,stock:"in",tone:"#C9B99A",desc:"Breathable linen blend with an elastic back waist. Sizes S to XL."},
+  {sku:"ME-F03",name:"Ankara Wrap Dress",cat:"Fashion",type:"physical",price:27000,stock:"low",tone:"#C0642B",desc:"Midi wrap dress in bold printed Ankara with a flattering tie waist."},
+  {sku:"ME-F04",name:"Everyday Cotton Tee",cat:"Fashion",type:"physical",price:8500,stock:"in",tone:"#E8E6DF",desc:"Heavyweight cotton, relaxed fit. Available in white, sand and charcoal."},
+  {sku:"ME-B01",name:"Vitamin C Glow Serum",cat:"Beauty & skincare",type:"physical",price:14500,was:16500,stock:"in",tone:"#E9A23B",desc:"Brightening 30ml serum for an even, healthy-looking complexion."},
+  {sku:"ME-B02",name:"Shea Body Butter",cat:"Beauty & skincare",type:"physical",price:7800,stock:"in",tone:"#E7D9B6",desc:"Rich, whipped shea butter for all-day moisture. 250g jar."},
+  {sku:"ME-B03",name:"Gentle Foaming Cleanser",cat:"Beauty & skincare",type:"physical",price:9200,stock:"out",tone:"#9CC7BE",desc:"Fragrance-free daily cleanser suitable for sensitive skin."},
+  {sku:"ME-B04",name:"SPF 50 Daily Sunscreen",cat:"Beauty & skincare",type:"physical",price:11000,stock:"low",tone:"#F2C98A",desc:"Lightweight, no white cast. Works well under makeup."},
+  {sku:"ME-A01",name:"Gold Hoop Earrings",cat:"Accessories",type:"physical",price:6500,stock:"in",tone:"#D1A93C",desc:"Tarnish-resistant 18k gold-plated hoops, light enough for all-day wear."},
+  {sku:"ME-A02",name:"Woven Straw Hat",cat:"Accessories",type:"physical",price:9800,was:12000,stock:"in",tone:"#D8BC84",desc:"Wide-brim hat with an adjustable inner band."},
+  {sku:"ME-A03",name:"Polarised Sunglasses",cat:"Accessories",type:"physical",price:13500,stock:"in",tone:"#2E3A36",desc:"UV400 lenses with a lightweight acetate frame and carry case."},
+  {sku:"ME-L01",name:"Soy Candle, Amber Wood",cat:"Lifestyle",type:"physical",price:10500,stock:"in",tone:"#B8774A",desc:"Hand-poured soy wax, around 45 hours of burn time."},
+  {sku:"ME-L02",name:"Ceramic Mug Set (2)",cat:"Lifestyle",type:"physical",price:12500,stock:"low",tone:"#7FA39A",desc:"Two 350ml stoneware mugs, dishwasher and microwave safe."},
+  {sku:"ME-L03",name:"Insulated Steel Bottle",cat:"Lifestyle",type:"physical",price:15000,stock:"in",tone:"#5E7F9A",desc:"750ml, keeps drinks cold for 24 hours or hot for 12."},
+
+  {sku:"ME-D01",name:"Notion Business Template Pack",cat:"Digital downloads",type:"digital",price:12000,stock:"in",tone:"#4B6BFB",desc:"14 ready-made Notion templates for orders, stock, invoices and content planning. Delivered as an instant download link."},
+  {sku:"ME-D02",name:"Ankara Print Digital Patterns (10)",cat:"Digital downloads",type:"digital",price:9500,was:12000,stock:"in",tone:"#B4552B",desc:"Ten print-ready Ankara patterns in PNG and vector format. Instant download, no shipping."},
+  {sku:"ME-D03",name:"90-Day Instagram Content Calendar",cat:"Digital downloads",type:"digital",price:15000,stock:"in",tone:"#7A5AF8",desc:"A plug-and-play calendar with captions, hooks and posting prompts built for product brands."},
+  {sku:"ME-D04",name:"Ebook: Selling on WhatsApp",cat:"Digital downloads",type:"digital",price:7500,stock:"in",tone:"#1E5B4B",desc:"A 64-page PDF guide on turning catalogue views into paid orders. File link sent after payment."},
+
+  {sku:"ME-S01",name:"Personal Styling Session",cat:"Services",type:"service",price:25000,stock:"low",tone:"#B08968",desc:"45-minute virtual styling session with outfit edits, sizing advice and a shopping list. Booked by appointment."},
+  {sku:"ME-S02",name:"Makeup Artist — Home Service",cat:"Services",type:"service",price:45000,stock:"in",tone:"#8E4A5B",desc:"Bridal and event makeup at your location in Lagos, kit included. Dates confirmed on WhatsApp."},
+  {sku:"ME-S03",name:"Brand Photography Half-Day",cat:"Services",type:"service",price:120000,stock:"low",tone:"#2E3A36",desc:"Half-day shoot for product and lifestyle images, edited and delivered in five days. Booking required."},
+  {sku:"ME-S04",name:"Social Media Management (Monthly)",cat:"Services",type:"service",price:150000,stock:"out",tone:"#5E7F9A",desc:"Content calendar, 12 posts and community replies handled for your brand each month. Fully booked this month."}
 ];
 
 /* =====================================================================
@@ -425,14 +496,27 @@ const art = p => {
     "Fashion": `<path d="M100 70c0-12 22-12 22 4 0 6-8 8-8 16l78 50c8 6 4 16-4 16H32c-8 0-12-10-4-16l78-50" fill="none" stroke="${l}" stroke-width="7" stroke-linejoin="round"/><rect x="70" y="170" width="100" height="70" rx="10" fill="${l}" opacity=".5"/>`,
     "Beauty & skincare": `<rect x="92" y="60" width="56" height="26" rx="6" fill="${d}"/><rect x="78" y="86" width="84" height="150" rx="18" fill="${l}"/><rect x="94" y="130" width="52" height="44" rx="6" fill="${t}" opacity=".7"/>`,
     "Accessories": `<circle cx="120" cy="150" r="62" fill="none" stroke="${l}" stroke-width="14"/><circle cx="120" cy="150" r="30" fill="${d}" opacity=".35"/>`,
-    "Lifestyle": `<path d="M72 100h96l-10 120c-1 12-10 20-22 20h-32c-12 0-21-8-22-20z" fill="${l}"/><rect x="108" y="64" width="24" height="30" rx="10" fill="${d}" opacity=".7"/>`
+    "Lifestyle": `<path d="M72 100h96l-10 120c-1 12-10 20-22 20h-32c-12 0-21-8-22-20z" fill="${l}"/><rect x="108" y="64" width="24" height="30" rx="10" fill="${d}" opacity=".7"/>`,
+    "Digital downloads": `<rect x="66" y="44" width="108" height="152" rx="14" fill="${l}"/><path d="M120 92v58" stroke="${d}" stroke-width="10" stroke-linecap="round"/><path d="M94 128l26 26 26-26" fill="none" stroke="${d}" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><rect x="84" y="218" width="72" height="12" rx="6" fill="${d}" opacity=".45"/>`,
+    "Services": `<rect x="58" y="70" width="124" height="152" rx="16" fill="${l}"/><rect x="58" y="70" width="124" height="38" rx="16" fill="${d}" opacity=".55"/><rect x="84" y="54" width="12" height="32" rx="6" fill="${d}"/><rect x="144" y="54" width="12" height="32" rx="6" fill="${d}"/><path d="M100 166l14 14 26-28" fill="none" stroke="${d}" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>`
   }[p.cat] || "";
   const s = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 300"><defs><linearGradient id="a" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${shade(t,20)}"/><stop offset="1" stop-color="${d}"/></linearGradient></defs><rect width="240" height="300" fill="url(#a)"/>${g}</svg>`;
   return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(s);
 };
 
-const stockTxt = {in:["In stock",""],low:["Only a few left","low"],out:["Out of stock","out"]};
-let cat = "All", term = "", cur = null, lastFocus = null;
+const STOCK = {
+  physical: { in:["In stock",""], low:["Only a few left","low"], out:["Sold out","out"] },
+  digital:  { in:["Available now",""], low:["Available now",""], out:["Coming soon","low"] },
+  service:  { in:["Available",""], low:["A few slots left","low"], out:["Fully booked","out"] }
+};
+const stockFor = p => (STOCK[p.type] || STOCK.physical)[p.stock] || STOCK.physical.in;
+const TYPE_LABEL = { physical:"Physical product", digital:"Digital download", service:"Service" };
+const DELIVERY = {
+  physical: { title:"Delivered to your door", text:"Lagos delivery in 1–3 working days, 2–5 days nationwide. Delivery fee confirmed on WhatsApp before you pay." },
+  digital: { title:"Instant delivery", text:"The download link or file is sent in WhatsApp right after payment. Nothing ships and no address is needed." },
+  service: { title:"Booked by appointment", text:"Choose a date and time on WhatsApp, then pay a deposit to confirm the booking. Slots reopen monthly." }
+};
+let type = "all", cat = "All", term = "", cur = null, lastFocus = null;
 
 /* =====================================================================
    The request message — exactly what the customer wants
@@ -444,10 +528,13 @@ function buildMessage(f){
     "WHAT I WANT",
     f.want,
     "",
+    "WHAT I SELL",
+    f.sell,
+    "",
     "MY BRAND",
     f.brand,
     "",
-    "PRODUCTS I WANT TO PROMOTE",
+    "PRODUCTS / SERVICES I WANT TO PROMOTE",
     f.products,
     "",
     "NEXT STEP",
@@ -469,13 +556,22 @@ function init(){
   document.title = CONFIG.name + " — One-Link Catalogue by Toss Enterprise";
   $("#banner").innerHTML = CONFIG.banner;
   $("#collage").innerHTML = [0,4,10].map(i => `<img alt="" src="${art(PRODUCTS[i])}">`).join("");
-  $("#chips").innerHTML = ["All", ...CONFIG.categories]
-    .map(c => `<button class="chip" aria-pressed="${c===cat}" data-c="${esc(c)}">${esc(c)}</button>`).join("");
+  renderTypeChips();
+  renderCatChips();
+
+  $("#typechips").addEventListener("click", e => {
+    const b = e.target.closest(".chip"); if (!b) return;
+    type = b.dataset.type;
+    cat = "All";
+    renderTypeChips();
+    renderCatChips();
+    render();
+  });
 
   $("#chips").addEventListener("click", e => {
     const b = e.target.closest(".chip"); if (!b) return;
-    cat = b.dataset.c;
-    document.querySelectorAll(".chip").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    cat = b.dataset.cat;
+    renderCatChips();
     render();
   });
   $("#q").addEventListener("input", e => { term = e.target.value.trim().toLowerCase(); render(); });
@@ -502,30 +598,67 @@ function init(){
   render();
 }
 
+function renderTypeChips(){
+  const items = [{ id:"all", short:"Everything" }, ...CONFIG.sellerTypes.map(t => ({ id:t.id, short:t.short }))];
+  $("#typechips").innerHTML = items.map(t =>
+    `<button class="chip" data-type="${t.id}" aria-pressed="${t.id === type}">${esc(t.short)}</button>`).join("");
+}
+
+function renderCatChips(){
+  const available = CONFIG.categories.filter(c =>
+    PRODUCTS.some(p => p.cat === c && (type === "all" || p.type === type)));
+  if (cat !== "All" && !available.includes(cat)) cat = "All";
+  const cats = ["All", ...available];
+  $("#chips").innerHTML = cats.map(c =>
+    `<button class="chip" data-cat="${esc(c)}" aria-pressed="${c === cat}">${esc(c)}</button>`).join("");
+}
+
 function render(){
   const list = PRODUCTS.map((p,i) => [p,i]).filter(([p]) =>
-    (cat === "All" || p.cat === cat) && (!term || p.name.toLowerCase().includes(term) || p.cat.toLowerCase().includes(term)));
+    (type === "all" || p.type === type) &&
+    (cat === "All" || p.cat === cat) &&
+    (!term ||
+      p.name.toLowerCase().includes(term) ||
+      p.cat.toLowerCase().includes(term) ||
+      (TYPE_LABEL[p.type] || "").toLowerCase().includes(term)));
 
-  $("#count").textContent = list.length + (list.length === 1 ? " product" : " products");
+  $("#count").textContent = list.length + (list.length === 1 ? " item" : " items");
+
+  const badgeLeft = p =>
+    p.type === "digital" ? '<span class="tag muted">Instant download</span>' :
+    p.type === "service" ? '<span class="tag muted">Book a session</span>' :
+    p.was ? '<span class="tag">Sale</span>' : "";
+
+  const badgeRight = p => {
+    if (p.stock === "out") {
+      const label = p.type === "service" ? "Fully booked" : p.type === "digital" ? "Coming soon" : "Sold out";
+      return `<span class="tag muted" style="left:auto;right:10px">${label}</span>`;
+    }
+    if (p.was && (p.type === "digital" || p.type === "service")) {
+      return '<span class="tag" style="left:auto;right:10px">Sale</span>';
+    }
+    return "";
+  };
+
   $("#grid").innerHTML = list.length ? list.map(([p,i]) => {
-    const [s,k] = stockTxt[p.stock];
-    return `<article class="card" data-i="${i}" tabindex="0" role="button">
+    const [s,k] = stockFor(p);
+    return `<article class="card" data-i="${i}" data-type="${p.type}" data-cat="${esc(p.cat)}" tabindex="0" role="button">
       <div class="ph">
         <img loading="lazy" alt="${esc(p.name)}" src="${art(p)}">
-        ${p.was ? '<span class="tag">Sale</span>' : ""}
-        ${p.stock === "out" ? '<span class="tag muted" style="left:auto;right:10px">Sold out</span>' : ""}
+        ${badgeLeft(p)}
+        ${badgeRight(p)}
       </div>
       <div class="in">
         <h3>${esc(p.name)}</h3>
         <small>${esc(p.cat)}</small>
         <div class="price">${fmt(p.price)}${p.was ? `<s>${fmt(p.was)}</s>` : ""}</div>
         <div class="stock"><i class="dot ${k}"></i>${s}</div>
-        <span class="view">View product
+        <span class="view">View details
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         </span>
       </div>
     </article>`;
-  }).join("") : `<div class="empty">No products match “${esc(term)}”. Try another name or category.</div>`;
+  }).join("") : `<div class="empty">Nothing matches that yet. Try another name, category or type.</div>`;
 
   // keyboard support for cards
   $("#grid").querySelectorAll(".card").forEach(card => {
@@ -541,7 +674,21 @@ function render(){
 function openProduct(p){
   cur = p;
   lastFocus = document.activeElement;
-  const [s,k] = stockTxt[p.stock];
+  const [s,k] = stockFor(p);
+  const d = DELIVERY[p.type] || DELIVERY.physical;
+
+  const dIcon = p.type === "digital"
+    ? '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>'
+    : p.type === "service"
+      ? '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg>'
+      : '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 3h15v13H1z"/><path d="M16 8h4l3 3v5h-7z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>';
+
+  const ctaNote = p.type === "digital"
+    ? "In a live catalogue, tapping “Buy on WhatsApp” sends the brand a message with this item, price and reference — and the download link comes back in the chat once payment lands."
+    : p.type === "service"
+      ? "In a live catalogue, tapping “Book on WhatsApp” sends the brand a message with this service, the date you'd like and any notes — so you agree the slot in one thread."
+      : "In a live catalogue, tapping “Order on WhatsApp” sends the brand a message with this exact item, price, quantity and reference — no typing needed.";
+
   $("#sheet").innerHTML = `
     <div style="position:relative">
       <img class="prod-img" alt="${esc(p.name)}" src="${art(p)}">
@@ -552,16 +699,22 @@ function openProduct(p){
       <div class="prod-meta">
         <span class="price">${fmt(p.price)}${p.was ? `<s>${fmt(p.was)}</s>` : ""}</span>
         <span class="stock"><i class="dot ${k}"></i>${s}</span>
+        <span class="stock">${TYPE_LABEL[p.type]}</span>
         <span class="stock">Ref ${esc(p.sku)}</span>
       </div>
       <p class="prod-desc">${esc(p.desc)}</p>
 
-      <div class="note">
-        <b>This is a demo</b>
-        In a live catalogue, tapping “Order on WhatsApp” here sends the brand a message with this exact item, price, quantity and reference — no typing needed.
+      <div class="delivery">
+        ${dIcon}
+        <div><b>${d.title}</b><p>${d.text}</p></div>
       </div>
 
-      <button class="btn primary block" data-request data-context="${esc(p.name)} (${esc(p.sku)})">
+      <div class="note">
+        <b>This is a demo</b>
+        ${ctaNote}
+      </div>
+
+      <button class="btn primary block" data-request data-context="${esc(p.name)} (${esc(p.sku)}, ${TYPE_LABEL[p.type].toLowerCase()})">
         Want this for yourself?
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </button>
@@ -595,6 +748,12 @@ const NEXT_OPTIONS = [
   "Build it now — I'm ready",
   "Send examples first"
 ];
+const SELL_OPTIONS = [
+  "Physical products",
+  "Digital products",
+  "Services",
+  "A mix of all three"
+];
 
 function openRequest(context){
   lastFocus = document.activeElement;
@@ -607,7 +766,7 @@ function openRequest(context){
         </div>
         <div>
           <h2 id="reqTitle">Want this for yourself?</h2>
-          <p>Three quick questions. Your answers go straight to our WhatsApp.</p>
+          <p>Four quick questions. Your answers go straight to our WhatsApp.</p>
         </div>
       </div>
 
@@ -620,13 +779,20 @@ function openRequest(context){
         </div>
 
         <div class="field">
+          <label for="f-sell">What do you sell? <span>· required</span></label>
+          <select id="f-sell" name="sell" required>
+            ${SELL_OPTIONS.map((o,i) => `<option value="${esc(o)}"${i===0?" selected":""}>${esc(o)}</option>`).join("")}
+          </select>
+        </div>
+
+        <div class="field">
           <label for="f-brand">Your brand name <span>· required</span></label>
           <input id="f-brand" name="brand" type="text" placeholder="e.g. Ada's Closet, Lekki" required autocomplete="organization" maxlength="80">
         </div>
 
         <div class="field">
-          <label for="f-products">Products you want to promote <span>· required</span></label>
-          <textarea id="f-products" name="products" placeholder="e.g. 12 Ankara dresses, 6 skincare bundles and 20 phone cases. About 40 items, photos already on my phone." required maxlength="600"></textarea>
+          <label for="f-products">Products or services you want to promote <span>· required</span></label>
+          <textarea id="f-products" name="products" placeholder="e.g. 12 Ankara dresses, a 40-page ebook, 3 styling packages — or 20 phone cases. Photos and files are already on my phone." required maxlength="600"></textarea>
         </div>
 
         <div class="field">
@@ -666,6 +832,7 @@ function openRequest(context){
 
   const readForm = () => ({
     want: $("#f-want").value,
+    sell: $("#f-sell").value,
     brand: $("#f-brand").value.trim(),
     products: $("#f-products").value.trim(),
     next: $("#f-next").value,

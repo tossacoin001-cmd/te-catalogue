@@ -1,0 +1,15 @@
+{
+  "name": "te-catalogue",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "One-link catalogue demo by Toss Enterprise — physical products, digital products and services.",
+  "scripts": {
+    "test": "node --test tests/site.test.mjs",
+    "serve": "node tests/helpers/server.mjs",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.50.0"
+  }
+}
