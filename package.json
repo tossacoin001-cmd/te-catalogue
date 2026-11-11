@@ -5,7 +5,10 @@
   "type": "module",
   "description": "One-link catalogue demo by Toss Enterprise — physical products, digital products and services.",
   "scripts": {
-    "test": "node --test tests/site.test.mjs",
+    "test": "node --test tests/logic.test.mjs tests/site.test.mjs",
+    "test:logic": "node --test tests/logic.test.mjs",
+    "test:site": "node --test tests/site.test.mjs",
+    "test:live": "node tests/live-smoke.mjs",
     "serve": "node tests/helpers/server.mjs",
     "deploy": "wrangler deploy"
   },

@@ -3,6 +3,9 @@
 .wrangler
 node_modules
 tests
+docs
+test-out.txt
+*.md
 package.json
 package-lock.json
 README.md

@@ -38,9 +38,30 @@ beforeEach(async () => {
   });
   context.setDefaultTimeout(8000);
   context.setDefaultNavigationTimeout(15000);
+  await context.route(/https:\/\/fonts\.(googleapis|gstatic)\.com\/.*/, route => route.abort());
   page = await context.newPage();
   await page.goto(server.url + "/", { waitUntil: "load" });
 });
+
+/** Re-open the app with a runtime config override (used for live-mode tests). */
+const openWith = async ({ config = null, path = "/", viewport = { width: 1280, height: 900 } } = {}) => {
+  await context.close();
+  context = await browser.newContext({ viewport });
+  await context.addInitScript(cfg => {
+    window.__opened = [];
+    window.open = url => {
+      window.__opened.push(String(url));
+      return null;
+    };
+    if (cfg) window.__TE_CONFIG__ = cfg;
+  }, config);
+  context.setDefaultTimeout(8000);
+  context.setDefaultNavigationTimeout(15000);
+  await context.route(/https:\/\/fonts\.(googleapis|gstatic)\.com\/.*/, route => route.abort());
+  page = await context.newPage();
+  await page.goto(server.url + path, { waitUntil: "load" });
+  await page.waitForFunction(() => window.__TE_READY__ === true);
+};
 
 const openForm = async () => {
   await page.click("header [data-request]");
@@ -284,5 +305,185 @@ describe("Sharing, links and pages", () => {
   test("credits Toss Enterprise and flags the page as a demo", async () => {
     assert.match(await page.textContent("footer"), /Toss Enterprise/);
     assert.match(await page.textContent(".banner"), /demo/i);
+  });
+});
+
+/* ------------------------------------------------------------------ */
+describe("Multi-business engine", () => {
+  test("serves a second, food-industry catalogue from the same engine", async () => {
+    await page.goto(server.url + "/?b=mamas-kitchen", { waitUntil: "load" });
+    await page.waitForFunction(() => window.__TE_READY__ === true);
+
+    assert.match(await page.title(), /Mama's Kitchen/);
+    assert.match(await page.textContent("#bname"), /Mama's Kitchen/);
+    assert.match(await page.textContent("#heroTitle"), /Party food/i);
+    assert.equal(await page.locator("#grid .card").count(), 8);
+    assert.equal(await page.evaluate(() => window.TE.business.slug), "mamas-kitchen");
+
+    await page.click('.chip[data-cat="Mains"]');
+    assert.ok(await page.locator("#grid .card").count() >= 3);
+  });
+
+  test("serves an electronics catalogue and falls back safely for unknown slugs", async () => {
+    await page.goto(server.url + "/?b=volt-gadgets#shop", { waitUntil: "load" });
+    await page.waitForFunction(() => window.__TE_READY__ === true);
+    assert.match(await page.textContent("#bname"), /Volt Gadgets/);
+    assert.equal(await page.locator("#grid .card").count(), 8);
+
+    await page.goto(server.url + "/?b=not-a-real-business", { waitUntil: "load" });
+    await page.waitForFunction(() => window.__TE_READY__ === true);
+    assert.match(await page.textContent("#bname"), /The Market Edit/);
+  });
+
+  test("the demo switcher moves between all three catalogues", async () => {
+    assert.equal(await page.locator("#bizswitch .biz").count(), 3);
+    assert.match(await page.textContent("#bizswitch .biz.active"), /The Market Edit/);
+
+    await page.click('#bizswitch a[href*="volt-gadgets"]');
+    await page.waitForLoadState("load");
+    await page.waitForFunction(() => window.__TE_READY__ === true);
+    assert.match(await page.textContent("#bname"), /Volt Gadgets/);
+    assert.match(page.url(), /b=volt-gadgets/);
+  });
+
+  test("keeps every shipped demo free of WhatsApp order links", async () => {
+    for (const slug of ["market-edit", "mamas-kitchen", "volt-gadgets"]) {
+      await page.goto(server.url + `/?b=${slug}`, { waitUntil: "load" });
+      await page.waitForFunction(() => window.__TE_READY__ === true);
+      assert.equal(await page.locator('a[href*="wa.me"]').count(), 0, slug);
+      assert.equal(await page.evaluate(() => window.TE.business.mode), "demo", slug);
+    }
+  });
+});
+
+/* ------------------------------------------------------------------ */
+describe("Product quantity and variants", () => {
+  test("updates the demo order preview with quantity, variant, price and reference", async () => {
+    await page.locator("#grid .card", { hasText: "Classic Leather Bag" }).first().click();
+    await page.waitForSelector("#modal.open");
+
+    await page.click('#sheet [data-qty="1"]');
+    await page.click('#sheet [data-qty="1"]');
+    await page.selectOption("#sheetVariant", "Cream");
+
+    assert.equal(await page.textContent("#qtyVal"), "3");
+    const preview = await page.textContent("#orderPreview");
+    assert.match(preview, /Classic Leather Bag/);
+    assert.match(preview, /Price: ₦35,000/);
+    assert.match(preview, /Quantity: 3/);
+    assert.match(preview, /Colour: Cream/);
+    assert.match(preview, /Ref: ME-F01/);
+
+    assert.equal(await page.locator('#modal a[href*="wa.me"]').count(), 0);
+    assert.equal(await page.locator("#sheet [data-request]").count(), 1);
+  });
+
+  test("never drops below one item", async () => {
+    await page.locator("#grid .card", { hasText: "Classic Leather Bag" }).first().click();
+    await page.waitForSelector("#modal.open");
+    await page.click('#sheet [data-qty="-1"]');
+    assert.equal(await page.textContent("#qtyVal"), "1");
+  });
+});
+
+/* ------------------------------------------------------------------ */
+describe("Live catalogue mode", () => {
+  const LIVE = { mode: "live", whatsapp: "2348012345678", whatsappDisplay: "0801 234 5678" };
+
+  test("builds a correctly encoded product order for the business number", async () => {
+    await openWith({ config: LIVE });
+    await page.locator("#grid .card", { hasText: "Classic Leather Bag" }).first().click();
+    await page.waitForSelector("#modal.open");
+
+    await page.click('#sheet [data-qty="1"]');
+    await page.selectOption("#sheetVariant", "Black");
+    const href = await page.getAttribute("#orderLink", "href");
+    const url = new URL(href);
+
+    assert.equal(url.origin + url.pathname, "https://wa.me/2348012345678");
+    const text = url.searchParams.get("text");
+    assert.match(text, /Classic Leather Bag/);
+    assert.match(text, /Price: ₦35,000/);
+    assert.match(text, /Quantity: 2/);
+    assert.match(text, /Ref: ME-F01/);
+    assert.match(text, /Colour: Black/);
+    assert.match(text, /confirm availability and delivery/i);
+    assert.equal(await page.locator('#modal a[href*="wa.me"]').count(), 1);
+    assert.equal(await page.locator("#sheet [data-request]").count(), 0);
+  });
+
+  test("shows a working general enquiry button in the header", async () => {
+    await openWith({ config: LIVE });
+    const link = page.locator("#enquiryBtn");
+    assert.ok(await link.isVisible());
+
+    const url = new URL(await link.getAttribute("href"));
+    assert.equal(url.origin + url.pathname, "https://wa.me/2348012345678");
+    assert.match(url.searchParams.get("text"), /found your catalogue/i);
+    assert.equal(await page.locator("#headerCta").isVisible(), false, "no Toss sales CTA is shown on a live client catalogue");
+  });
+
+  test("keeps digital ordering accurate", async () => {
+    await openWith({ config: LIVE });
+    await page.locator("#grid .card", { hasText: "Notion Business Template Pack" }).first().click();
+    await page.waitForSelector("#modal.open");
+    assert.match(await page.textContent("#orderLink"), /Buy on WhatsApp/);
+    const text = new URL(await page.getAttribute("#orderLink", "href")).searchParams.get("text");
+    assert.match(text, /download link/i);
+    assert.doesNotMatch(text, /shipping/i);
+  });
+});
+
+/* ------------------------------------------------------------------ */
+describe("Commercial packages", () => {
+  test("presents Starter with its price and delivery target, and Pro honestly", async () => {
+    const packages = page.locator("#packages");
+    await packages.scrollIntoViewIfNeeded();
+    const text = await packages.innerText();
+    assert.match(text, /Catalogue Starter/);
+    assert.match(text, /₦50,000/);
+    assert.match(text, /10 products/i);
+    assert.match(text, /24 hours/i);
+    assert.match(text, /Catalogue Pro/);
+    assert.match(text, /Coming soon/);
+    assert.match(text, /no dashboard exists yet/i);
+  });
+
+  test("preselects the package and sends it to Toss WhatsApp", async () => {
+    await page.locator(".package").first().locator("button").click();
+    await page.waitForSelector("#requestModal.open");
+    assert.equal(await page.inputValue("#f-package"), "Catalogue Starter — ₦50,000");
+
+    await page.fill("#f-brand", "Ada's Closet");
+    await page.fill("#f-products", "10 Ankara dresses");
+    await page.click("#sendBtn");
+
+    const url = new URL((await page.evaluate(() => window.__opened))[0]);
+    assert.equal(url.origin + url.pathname, `https://wa.me/${WA_NUMBER}`);
+    const text = url.searchParams.get("text");
+    assert.match(text, /PACKAGE/);
+    assert.match(text, /Catalogue Starter — ₦50,000/);
+    assert.match(text, /Ada's Closet/);
+    assert.match(text, /10 Ankara dresses/);
+  });
+});
+
+/* ------------------------------------------------------------------ */
+describe("Mobile and empty states", () => {
+  test("has no horizontal overflow at phone width", async () => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.waitForTimeout(150);
+    const overflow = await page.evaluate(() =>
+      document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    assert.ok(overflow <= 1, `page overflows by ${overflow}px`);
+  });
+
+  test("shows a clear empty state and resets the filters", async () => {
+    await page.fill("#q", "zzzz-not-a-product");
+    await page.waitForSelector("#grid .empty");
+    assert.match(await page.textContent("#grid"), /nothing matches/i);
+    await page.click("[data-clear-filters]");
+    assert.equal(await page.inputValue("#q"), "");
+    assert.equal(await page.locator("#grid .card").count(), 22);
   });
 });
