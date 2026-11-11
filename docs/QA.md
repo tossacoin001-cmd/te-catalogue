@@ -2,7 +2,7 @@
 
 **Date:** 10 November 2026
 **Target:** local production build of `te-catalogue`, then the live Cloudflare Worker
-**Automated suite:** 65 tests (13 unit, 52 browser) — all passing
+**Automated suite:** 65 tests (29 unit, 36 browser) — all passing
 
 ## Catalogue
 
