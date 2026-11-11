@@ -61,9 +61,31 @@
 | --- | --- |
 | No build step; ES modules served as static assets | Pass |
 | `docs/`, tests, package files and repo files excluded from assets | Pass |
-| Local production suite green before deploy | Pass |
+| Local production suite green before deploy | Pass — 65/65 |
 | Previous deployed version available for rollback | Yes — tag `pre-refine-2026-11-10` |
-| Live URL re-tested after deploy | See final report / deployment section |
+| Live URL re-tested after deploy | Pass — 28/28 smoke checks on version `3d1f6464-e1e3-4c66-857c-c5ec0e49543b` |
+
+## Live verification (10 November 2026)
+
+Deployed with Wrangler 4.159.0 to the existing `te-catalogue` Worker.
+
+| Check | Result |
+| --- | --- |
+| `https://te-catalogue.tossacoin001.workers.dev/` returns 200 | Pass |
+| 22 cards, demo mode, zero `wa.me` anchors | Pass |
+| `?b=mamas-kitchen` → 8 cards, correct brand | Pass |
+| `?b=volt-gadgets` → 8 cards, correct brand | Pass |
+| Product sheet quantity/preview/price/SKU | Pass |
+| Toss request message recipients and package field | Pass |
+| `/js/app.js` serves as JavaScript (200) | Pass |
+| `/docs/QA.md`, `/tests/…`, `/package.json`, `/.git/config` return 404 | Pass |
+| Mobile 390px: no overflow, sticky CTA visible | Pass |
+| Unknown route returns 404 with a home link | Pass (expected 404 in console) |
+| Unexpected console errors or failed requests | None |
+| Home page initial transfer | 7 requests, ~23 KB; no third-party JavaScript |
+
+The earlier live build was Lighthouse 100 / 100 / 100 / 100. Lighthouse was not re-run in this
+pass; the change set adds only local ES modules and CSS, with no new third-party runtime.
 
 ## Known limitations
 

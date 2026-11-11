@@ -16,8 +16,10 @@ await context.addInitScript(() => {
 });
 const page = await context.newPage();
 const errors = [];
+const failedResponses = [];
 page.on("pageerror", e => errors.push(e.message));
 page.on("console", m => { if (m.type() === "error") errors.push(m.text()); });
+page.on("response", r => { if (r.status() >= 400) failedResponses.push(`${r.status()} ${r.url()}`); });
 
 const res = await page.goto(BASE + "/", { waitUntil: "load", timeout: 30000 });
 await page.waitForFunction(() => window.__TE_READY__ === true, null, { timeout: 15000 });
@@ -70,15 +72,19 @@ const js = await page.request.get(BASE + "/js/app.js");
 check("app.js served", js.status() === 200, js.status());
 check("app.js type", /javascript/.test(js.headers()["content-type"] || ""), js.headers()["content-type"]);
 
+check("no console/page errors", errors.length === 0, errors.join(" | "));
+
 const notFound = await page.goto(BASE + "/this-page-does-not-exist", { waitUntil: "load" });
 check("404 status", notFound.status() === 404, notFound.status());
 
 const docs = await page.request.get(BASE + "/docs/QA.md");
 check("docs excluded", docs.status() === 404, docs.status());
 
-check("no console/page errors", errors.length === 0, errors.join(" | "));
+const unexpected = failedResponses.filter(line =>
+  !line.includes("/this-page-does-not-exist") && !line.includes("/docs/QA.md"));
+check("no unexpected failed requests", unexpected.length === 0, unexpected.join(" | "));
 
 const failed = checks.filter(c => !c.ok);
-console.log(JSON.stringify({ total: checks.length, failed: failed.length, failures: failed, errors }, null, 2));
+console.log(JSON.stringify({ total: checks.length, failed: failed.length, failures: failed, failedResponses, errors }, null, 2));
 await browser.close();
 process.exit(failed.length ? 1 : 0);
